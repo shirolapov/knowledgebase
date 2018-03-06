@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Изменение статьи: {{ article.title }}</title>
+      <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+      <articles>
+        <div class="container">
+          <form action="{% url 'articles:change' article.id %}" method="POST">
+            {% csrf_token %}
+            <label for="form.title.id">{{ form.title.label }}</label>
+            {{ form.title }}
+            <label for="form.short_text.id">{{ form.short_text.label }}</label>
+            {{ form.short_text }}
+            <label for="form.text.id">{{ form.text.label }}</label>
+            {{ form.text }}
+            <label for="form.internal.id">{{ form.internal.label }}</label>
+            {{ form.internal }}
+            <button type="Submit" class="btn">Изменить статью</button>
+          </form>
+        </div>
+      </articles>
+    </body>
+</html>

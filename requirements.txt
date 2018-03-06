@@ -1,0 +1,6 @@
+Django==1.11.10
+django-wysiwyg-redactor==0.5.1
+Pillow==5.0.0
+psycopg2==2.7.1
+pytz==2018.3
+uWSGI==2.0.15
