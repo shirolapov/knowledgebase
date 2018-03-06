@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="jumbotron">
+    <h1>Статья успешно удалена</h1>
+    <p>
+      <a class="btn btn-primary btn-lg" href="{% url "articles:list" %}" role="button">На главную</a>
+    </p>
+  </div>
+</div>
+{% endblock content %}

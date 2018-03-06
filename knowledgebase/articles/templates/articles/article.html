@@ -1,25 +1,18 @@
-<!doctype html>
-<html>
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>{{ article.title }}</title>
-      <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
-      <articles>
-        <div class="container">
-          <h1>{{ article.title }}</h1>
-          <div>{{ article.short_text }}</div>
-          <br>
-          <div>{{ article.text|safe }}</div>
-          {% if views_Author %}
-            <form action="{% url "articles:change" article.id %}">
-              <button type="submit" class="btn btn-default">Редактировать статью</button>
-            </form>
-          {% endif %}
-        </div>
-      </articles>
-    </body>
-</html>
+{% extends 'base.html' %}
+
+{% block content %}
+<articles>
+  <div class="container">
+    <p>{{ article.datetime_created }}, {{ article.author.get_full_name }}</p>
+    <h1>{{ article.title }}</h1>
+    <div>{{ article.short_text }}</div>
+    <br>
+    <div>{{ article.text|safe }}</div>
+    {% if views_author %}
+      <form action="{% url "articles:change" article.id %}">
+        <button type="submit" class="btn btn-default">Редактировать статью</button>
+      </form>
+    {% endif %}
+  </div>
+</articles>
+{% endblock content %}

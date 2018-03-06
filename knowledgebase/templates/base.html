@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>{{ header.title }}</title>
+      <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+    <body>
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">База знаний</a>
+          </div>
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'articles:list' %}">Лента статей</a></li>
+            {% if request.user.is_staff %}
+                <li><a href="{% url 'accounts:operatorslist' %}">Управление операторами</a></li>
+            {% endif %}
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right">
+            {% if not is_login %}
+                <li><a href="{% url 'accounts:login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            {% else %}
+                <p class="navbar-text">{{ user.last_name }} {{ user.first_name }}</p>
+                <li><a href="{% url 'articles:new' %}"><span class="glyphicon glyphicon-plus"></span>Создать статью</a></li>
+                <li><a href="{% url 'accounts:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            {% endif %}
+          </ul>
+        </div>
+      </nav>
+      {% block content %}
+
+      {% endblock content %}
+    </body>
+</html>

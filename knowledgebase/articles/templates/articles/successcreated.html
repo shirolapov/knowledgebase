@@ -1,23 +1,14 @@
-<!doctype html>
-<html>
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Успех!</title>
-      <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
-      <div class="container">
-        <div class="jumbotron">
-          <h1>Статья успешно создана</h1>
-          <p>Вы успешно создали статью: <a href="{% url 'articles:page' article.id %}">{{ article.title }}</a></p>
-          <p>
-            <a class="btn btn-primary btn-lg" href="{% url "articles:new" %}" role="button">Добавить ещё статью</a>
-            <a class="btn btn-primary btn-lg" href="{% url "articles:list" %}" role="button">На главную</a>
-          </p>
-        </div>
-      </div>
-    </body>
-  </html>
-</script>
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="jumbotron">
+    <h1>Статья успешно создана</h1>
+    <p>Вы успешно создали статью: <a href="{% url 'articles:page' article.id %}">{{ article.title }}</a></p>
+    <p>
+      <a class="btn btn-primary btn-lg" href="{% url "articles:new" %}" role="button">Добавить ещё статью</a>
+      <a class="btn btn-primary btn-lg" href="{% url "articles:list" %}" role="button">На главную</a>
+    </p>
+  </div>
+</div>
+{% endblock content %}

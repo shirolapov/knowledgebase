@@ -38,15 +38,6 @@ class Article(models.Model):
     def __str__(self):
         return self.title
 
-    def get_author(self):
-        if self.author.last_name == "" or  self.author.first_name == "":
-            return self.author.username
-        else:
-            return "{firstname} {lastname}".format(
-                firstname = self.author.first_name,
-                lastname = self.author.last_name
-            )
-
     class Meta:
         verbose_name = u"Статья"
         verbose_name_plural = u"Статьи"

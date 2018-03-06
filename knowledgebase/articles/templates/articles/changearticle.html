@@ -1,28 +1,41 @@
-<!doctype html>
-<html>
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Изменение статьи: {{ article.title }}</title>
-      <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
-      <articles>
-        <div class="container">
-          <form action="{% url 'articles:change' article.id %}" method="POST">
-            {% csrf_token %}
-            <label for="form.title.id">{{ form.title.label }}</label>
-            {{ form.title }}
-            <label for="form.short_text.id">{{ form.short_text.label }}</label>
-            {{ form.short_text }}
-            <label for="form.text.id">{{ form.text.label }}</label>
-            {{ form.text }}
-            <label for="form.internal.id">{{ form.internal.label }}</label>
-            {{ form.internal }}
-            <button type="Submit" class="btn">Изменить статью</button>
-          </form>
+{% extends 'base.html' %}
+
+{% block content %}
+  <articles>
+    <div class="container">
+      {% if changed %}
+        <div class="alert alert-success">
+          <strong>Успех!</strong> Статья <a href="{% url 'articles:page' article.id %}" class="alert-link">"{{ article.title }}"</a> успешно изменена.
         </div>
-      </articles>
-    </body>
-</html>
+      {% endif %}
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <b>Статья создана:</b> {{ article.datetime_created }}<br>
+          <b>Последнее изменение:</b> {{ article.datetime_modified }}
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <form action="{% url 'articles:change' article.id %}" method="POST">
+              {% csrf_token %}
+              <label for="form.title.id">{{ form.title.label }}</label>
+              {{ form.title }}
+              <label for="form.short_text.id">{{ form.short_text.label }}</label>
+              {{ form.short_text }}
+              <label for="form.text.id">{{ form.text.label }}</label>
+              {{ form.text }}
+              <label for="form.internal.id">{{ form.internal.label }}</label>
+              {{ form.internal }}
+              <input type="hidden" name="id_article" value="{{ article.id }}">
+              <button type="Submit" class="btn btn-primary pull-right">Изменить статью</button>
+            </form>
+            <form action="{% url 'articles:delete' article.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger pull-left">Удалить статью</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </articles>
+{% endblock content %}

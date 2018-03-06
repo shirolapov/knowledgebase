@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <articles>
+    <div class="container">
+      <ul class="list-group">
+        {% for user in users %}
+            <div class="list-group-item">
+                <b>Оператор:</b> {{ user.username }}
+                <button type="button" class="btn btn-xs btn-primary pull-right">Изменить пользователя</button>
+                <button type="button" class="btn btn-xs btn-danger pull-right">Удалить пользователя</button>
+            </div>
+        {% endfor %}
+      </ul>
+      <form action="{% url 'accounts:add' %}">
+        <button type="submit" class="btn btn-primary pull-right">Добавить оператора</button>
+      </form>
+    </div>
+  </articles>
+{% endblock content %}

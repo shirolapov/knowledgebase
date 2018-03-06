@@ -10,29 +10,53 @@ from articles.forms import ArticleForm
 
 # Create your views here.
 def list_of_articles(request):
+    is_login = False
+    user = None
+
     if request.user.is_authenticated():
         articles = Article.objects.all().order_by("-datetime_created")
+        is_login = True
+        user = request.user
     else:
         articles = Article.objects.filter(
             internal=False
         ).order_by("-datetime_created")
 
     context = {
-        "articles": articles
+        "header": {
+            "title": "Лента статей"
+        },
+        "articles": articles,
+        "is_login": is_login,
+        "user": user
     }
     template = loader.get_template('articles/allarticles.html')
     return HttpResponse(template.render(context, request))
 
 
 def page_of_articles(request, id):
+    is_login = False
+    user = None
+    views_author = False
+
     article = get_object_or_404(Article, id = id)
     if article.internal:
         if not request.user.is_authenticated():
             return HttpResponseForbidden("Доступ запрещён")
+        else:
+            title = u"Статья {title}".format(title=article.title)
+            is_login = True
+            user = request.user
+            views_author = article.author == user
 
     context = {
+        "header": {
+            "title": title
+        },
         "article": article,
-        "views_Author": True
+        "views_author": views_author,
+        "is_login": is_login,
+        "user": user
     }
     template = loader.get_template('articles/article.html')
     return HttpResponse(template.render(context, request))
@@ -40,6 +64,9 @@ def page_of_articles(request, id):
 
 @login_required
 def new_article(request):
+    is_login = True
+    user = request.user
+
     if request.method == 'POST':
         form = ArticleForm(request.POST)
         if form.is_valid():
@@ -58,7 +85,12 @@ def new_article(request):
 
     form = ArticleForm()
     context = {
-        "form": form
+        "header": {
+            "title": "Создать новую статью"
+        },
+        "form": form,
+        "is_login": is_login,
+        "user": user
     }
     template = loader.get_template('articles/newarticle.html')
     return HttpResponse(template.render(context, request))
@@ -67,6 +99,9 @@ def new_article(request):
 @login_required
 def new_article_success(request):
     new_article_created = False
+    is_login = True
+    user = request.user
+
     try:
         new_article_created = json.loads(request.session['new_article'])
         last_created_article_id = json.loads(
@@ -79,7 +114,9 @@ def new_article_success(request):
         request.session['new_article'] = False
         article = get_object_or_404(Article, id = last_created_article_id)
         context = {
-            "article": article
+            "article": article,
+            "is_login": is_login,
+            "user": user
         }
         template = loader.get_template('articles/successcreated.html')
         return HttpResponse(template.render(context, request))
@@ -89,11 +126,58 @@ def new_article_success(request):
 
 @login_required
 def change_article(request, id):
-    article = get_object_or_404(Article, id = id)
+    changed = False
+    is_login = True
+    user = request.user
+
+    if request.method == 'POST':
+        form = ArticleForm(request.POST)
+        if form.is_valid():
+            id = request.POST["id_article"]
+            article = get_object_or_404(Article, id = id)
+            article.title = form.cleaned_data["title"]
+            article.short_text = form.cleaned_data["short_text"]
+            article.text = form.cleaned_data["text"]
+            article.internal = form.cleaned_data["internal"]
+            article.save()
+            changed = True
+
+    if changed:
+        article = article
+    else:
+        article = get_object_or_404(Article, id = id)
+
+    title = u"Изменение статьи {title}".format(title=article.title)
     form = ArticleForm(instance=article)
     context = {
+        "header": {
+            "title": title,
+        },
         "article": article,
-        "form": form
+        "form": form,
+        "changed": changed,
+        "is_login": is_login,
+        "user": user
     }
     template = loader.get_template('articles/changearticle.html')
     return HttpResponse(template.render(context, request))
+
+
+@login_required
+def delete_article(request, id):
+    is_login = True
+    user = request.user
+
+    if request.method == 'POST':
+        article = get_object_or_404(Article, id = id)
+        if user == article.author:
+            article.delete()
+            context = {
+                "header": {
+                    "title": "Статья успешно удалена",
+                },
+                "is_login": is_login,
+                "user": user
+            }
+            template = loader.get_template('articles/successdeleted.html')
+            return HttpResponse(template.render(context, request))

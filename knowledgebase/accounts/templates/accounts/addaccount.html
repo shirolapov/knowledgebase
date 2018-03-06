@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <articles>
+    <div class="container">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Создать нового пользователя
+        </div>
+        <div class="panel-body">
+          <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary pull-right">Создать</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </articles>
+{% endblock content %}

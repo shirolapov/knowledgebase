@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <articles>
+    <div class="container">
+      {% if error_login %}
+      <div class="alert alert-warning">
+        <strong>Ошибка!</strong> Попытка входа в систему неудачна.
+      </div>
+      {% endif %}
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+         <label for="usr">Name:</label>
+         <input type="text" class="form-control" id="usr" name="username">
+        </div>
+        <div class="form-group">
+         <label for="pwd">Password:</label>
+         <input type="password" class="form-control" id="pwd" name="password">
+        </div>
+        <button type="submit" class="btn btn-primary pull-right">Вход</button>
+      </form>
+    </div>
+  </articles>
+{% endblock content %}

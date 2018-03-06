@@ -1,29 +1,21 @@
-<!doctype html>
-<html>
-    <head>
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <title>Все статьи</title>
-      <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    </head>
-    <body>
-      <articles>
-        <div class="container">
-          <h1>База знаний</h1>
+{% extends 'base.html' %}
+
+{% block content %}
+<articles>
+  <div class="container">
+    <h1>База знаний</h1>
+  </div>
+  <div class="container">
+      {% for article in articles %}
+        <div>
+          <h3>{{ article.title }}</h3>
+          <p>{{ article.datetime_created }}, {{ article.author.get_full_name }}</p>
+          <p>{{ article.short_text }}</p>
+          <form action="{% url 'articles:page' article.id %}">
+              <button type="submit" class="btn btn-primary btn-sm">Читать дальше</button>
+          </form>
         </div>
-        <div class="container">
-            {% for article in articles %}
-              <div>
-                <h3>{{ article.title }}</h3>
-                <p>{{ article.datetime_created }}, {{ article.get_author }}</p>
-                <p>{{ article.short_text }}</p>
-                <form action="{% url 'articles:page' article.id %}">
-                    <button type="submit" class="btn btn-primary btn-lg">Читать дальше</button>
-                </form>
-              </div>
-            {% endfor %}
-        </div>
-      </articles>
-    </body>
-</html>
+      {% endfor %}
+  </div>
+</articles>
+{% endblock content %}

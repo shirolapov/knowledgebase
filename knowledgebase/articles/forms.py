@@ -9,7 +9,7 @@ class ArticleForm(ModelForm):
         fields = ['title', 'short_text', 'text', 'internal']
         widgets = {
             'title': TextInput(attrs={'class': 'form-control'}),
-            'short_text': Textarea(attrs={'class': 'form-control'}),
+            'short_text': Textarea(attrs={'class': 'form-control', 'rows': 2}),
             'text': RedactorEditor(attrs={'class': 'form-control'}),
             'internal': CheckboxInput(attrs={'class': 'form-control'}),
         }
