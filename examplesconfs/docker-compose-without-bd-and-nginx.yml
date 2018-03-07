@@ -1,0 +1,12 @@
+version: '3'
+  web:
+    build: .
+    hostname: web
+    restart: always
+    command: uwsgi --ini /code/uwsgi.ini
+    environment:
+      DJANGO_SETTINGS_MODULE: knowledgebase.settings
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
