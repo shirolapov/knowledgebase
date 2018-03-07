@@ -3,9 +3,11 @@ from django.template import loader
 from django.urls import reverse
 from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
+from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from articles.models import Article
 from articles.forms import ArticleForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # Create your views here.
@@ -22,11 +24,24 @@ def list_of_articles(request):
             internal=False
         ).order_by("-datetime_created")
 
+    paginator = Paginator(articles, 5)
+
+    page = request.GET.get('page')
+
+    try:
+        articles_p = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        articles_p = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        articles_p = paginator.page(paginator.num_pages)
+
     context = {
         "header": {
             "title": "Лента статей"
         },
-        "articles": articles,
+        "articles": articles_p,
         "is_login": is_login,
         "user": user
     }

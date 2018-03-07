@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 
@@ -39,6 +40,7 @@ def login_page(request):
 
 
 @login_required
+@staff_member_required
 def operators_list(request):
     is_login = True
     user = request.user
@@ -61,59 +63,56 @@ def operators_list(request):
     except KeyError:
         pass
 
-    if user.is_staff:
-        context = {
-            "header": {
-                "title": "Список операторов"
-            },
-            "is_login": is_login,
-            "user": user,
-            "users": users,
-            "alert": alert
-        }
-        template = loader.get_template('accounts/operatorslist.html')
-        return HttpResponse(template.render(context, request))
-    else:
-        return HttpResponseForbidden("Доступ только для сотрудников")
+    context = {
+        "header": {
+            "title": "Список операторов"
+        },
+        "is_login": is_login,
+        "user": user,
+        "users": users,
+        "alert": alert
+    }
+    template = loader.get_template('accounts/operatorslist.html')
+    return HttpResponse(template.render(context, request))
 
 
 @login_required
+@staff_member_required
 def add_operator(request):
     is_login = True
     user = request.user
     form = UserForm()
-    if user.is_staff:
-        if request.method == 'POST':
-            form = UserForm(request.POST)
-            if form.is_valid():
-                new_user = User.objects.create_user(
-                    username = form.cleaned_data['username'],
-                    first_name = form.cleaned_data['first_name'],
-                    last_name = form.cleaned_data['last_name'],
-                    email = form.cleaned_data['email'],
-                    password = form.cleaned_data['password'],
-                )
 
-                request.session['user_created'] = json.dumps(True)
-                request.session['user_created_id'] = json.dumps(new_user.id)
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            new_user = User.objects.create_user(
+                username = form.cleaned_data['username'],
+                first_name = form.cleaned_data['first_name'],
+                last_name = form.cleaned_data['last_name'],
+                email = form.cleaned_data['email'],
+                password = form.cleaned_data['password'],
+            )
 
-                return redirect("/accounts/operatorslist/")
+            request.session['user_created'] = json.dumps(True)
+            request.session['user_created_id'] = json.dumps(new_user.id)
 
-        context = {
-            "header": {
-                "title": "Добавить оператора"
-            },
-            "is_login": is_login,
-            "user": user,
-            "form": form
-        }
-        template = loader.get_template('accounts/addaccount.html')
-        return HttpResponse(template.render(context, request))
-    else:
-        return HttpResponseForbidden("Доступ только для сотрудников")
+            return redirect("/accounts/operatorslist/")
+
+    context = {
+        "header": {
+            "title": "Добавить оператора"
+        },
+        "is_login": is_login,
+        "user": user,
+        "form": form
+    }
+    template = loader.get_template('accounts/addaccount.html')
+    return HttpResponse(template.render(context, request))
 
 
 @login_required
+@staff_member_required
 def change_operator(request, id):
     is_login = True
     user = request.user
@@ -121,31 +120,28 @@ def change_operator(request, id):
     changed_user = User.objects.get(id = int(id))
     form = UserChangeForm(instance=changed_user)
 
-    if user.is_staff:
-        if request.method == 'POST':
-            form = UserChangeForm(request.POST)
-            if form.is_valid():
-                changed_user.username = form.cleaned_data["username"]
-                changed_user.first_name = form.cleaned_data["first_name"]
-                changed_user.last_name = form.cleaned_data["last_name"]
-                changed_user.email = form.cleaned_data["email"]
-                changed_user.is_active = form.cleaned_data["is_active"]
-                changed_user.save()
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST)
+        if form.is_valid():
+            changed_user.username = form.cleaned_data["username"]
+            changed_user.first_name = form.cleaned_data["first_name"]
+            changed_user.last_name = form.cleaned_data["last_name"]
+            changed_user.email = form.cleaned_data["email"]
+            changed_user.is_active = form.cleaned_data["is_active"]
+            changed_user.save()
 
-                request.session['user_changed'] = json.dumps(True)
-                request.session['user_changed_id'] = json.dumps(changed_user.id)
+            request.session['user_changed'] = json.dumps(True)
+            request.session['user_changed_id'] = json.dumps(changed_user.id)
 
-                return redirect(reverse('accounts:operatorslist'))
-        context = {
-            "header": {
-                "title": "Изменить оператора"
-            },
-            "is_login": is_login,
-            "user": user,
-            "form": form,
-        }
+            return redirect(reverse('accounts:operatorslist'))
+    context = {
+        "header": {
+            "title": "Изменить оператора"
+        },
+        "is_login": is_login,
+        "user": user,
+        "form": form,
+    }
 
-        template = loader.get_template('accounts/changeoperator.html')
-        return HttpResponse(template.render(context, request))
-    else:
-        return HttpResponseForbidden("Доступ только для сотрудников")
+    template = loader.get_template('accounts/changeoperator.html')
+    return HttpResponse(template.render(context, request))
