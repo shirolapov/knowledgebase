@@ -1,6 +1,20 @@
 version: '3'
 
 services:
+  nginx:
+    image: nginx:1.12.2
+    command: bash -c "mkdir -p /code/logs/nginx/web/ && nginx -g 'daemon off;'"
+    environment:
+     - NGINX_HOST=localhost
+     - NGINX_PORT=8080
+    volumes:
+      - .:/code
+      - ./nginx_docker.conf:/etc/nginx/conf.d/nginx_docker.conf:ro
+    ports:
+      - "8080:8080"
+    depends_on:
+      - web
+
   db:
     image: postgres:9.6.2
     ports:
@@ -14,7 +28,7 @@ services:
     build: .
     hostname: web
     restart: always
-    command: python manage.py runserver 0.0.0.0:8000
+    command: uwsgi --ini /code/uwsgi.ini --py-autoreload 1
     environment:
       DJANGO_SETTINGS_MODULE: knowledgebase.settings
     volumes:

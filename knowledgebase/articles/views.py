@@ -55,14 +55,15 @@ def page_of_articles(request, id):
     views_author = False
 
     article = get_object_or_404(Article, id = id)
-    if article.internal:
-        if not request.user.is_authenticated():
+    title = u"Статья {title}".format(title=article.title)
+
+    if request.user.is_authenticated:
+        is_login = True
+        user = request.user
+        views_author = article.author == user
+    else:
+        if article.internal:
             return HttpResponseForbidden("Доступ запрещён")
-        else:
-            title = u"Статья {title}".format(title=article.title)
-            is_login = True
-            user = request.user
-            views_author = article.author == user
 
     context = {
         "header": {
