@@ -3,12 +3,18 @@
 {% block content %}
   <articles>
     <div class="container">
+      {% if alert %}
+      <div class="alert alert-success">
+        <strong>Success!</strong> {{ alert }}
+      </div>
+      {% endif %}
       <ul class="list-group">
         {% for user in users %}
             <div class="list-group-item">
-                <b>Оператор:</b> {{ user.username }}
-                <button type="button" class="btn btn-xs btn-primary pull-right">Изменить пользователя</button>
-                <button type="button" class="btn btn-xs btn-danger pull-right">Удалить пользователя</button>
+                <b>Оператор:</b> {% if not user.is_active %}<strike>{{ user.get_full_name }}</strike>{% else %}{{ user.get_full_name }}{% endif %}
+                <form class="pull-right" action="{% url 'accounts:change' user.id %}">
+                    <button type="submit" class="btn btn-xs btn-primary">Изменить пользователя</button>
+                </form>
             </div>
         {% endfor %}
       </ul>

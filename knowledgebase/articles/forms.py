@@ -11,5 +11,5 @@ class ArticleForm(ModelForm):
             'title': TextInput(attrs={'class': 'form-control'}),
             'short_text': Textarea(attrs={'class': 'form-control', 'rows': 2}),
             'text': RedactorEditor(attrs={'class': 'form-control'}),
-            'internal': CheckboxInput(attrs={'class': 'form-control'}),
+            'internal': CheckboxInput(),
         }
