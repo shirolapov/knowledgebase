@@ -136,4 +136,4 @@ STATICFILES_DIRS = [
 
 # django-wysiwyg-redactor settings
 REDACTOR_UPLOAD = 'redactor/'
-REDACTOR_OPTIONS = {'lang': 'ru', 'plugins': ['source', 'imagemanager', 'alignment'], 'imageManagerJson': '/articles/images/'}
+REDACTOR_OPTIONS = {'lang': 'ru', 'plugins': ['source', 'imagemanager', 'alignment'], 'imageManagerJson': '/articles/images/', 'minHeight': '500px'}

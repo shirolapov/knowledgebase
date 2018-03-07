@@ -20,11 +20,11 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 
 urlpatterns = [
+    url(r'^$', RedirectView.as_view(url='/articles/', permanent=False)),
     url(r'^accounts/', include('accounts.urls')),
     url(r'^articles/', include('articles.urls')),
     url(r'^redactor/', include('redactor.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'$', RedirectView.as_view(url='/articles/', permanent=False)),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

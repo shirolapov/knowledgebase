@@ -8,7 +8,7 @@
         Создать новую статью
       </div>
       <div class="panel-body">
-        <div class="input-group">
+        <div class="form-group">
           <form action="{% url 'articles:new' %}" method="POST">
             {% csrf_token %}
             {{ form.as_p }}

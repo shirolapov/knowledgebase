@@ -10,6 +10,6 @@ class ArticleForm(ModelForm):
         widgets = {
             'title': TextInput(attrs={'class': 'form-control'}),
             'short_text': Textarea(attrs={'class': 'form-control', 'rows': 2}),
-            'text': RedactorEditor(attrs={'class': 'form-control'}),
+            'text': RedactorEditor(attrs={'class': 'redactor-box', 'rows': 40}),
             'internal': CheckboxInput(),
         }
